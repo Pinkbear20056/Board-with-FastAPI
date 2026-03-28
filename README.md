@@ -1,4 +1,4 @@
-# Board-with-FastAPI
+# FastAPI-Board
 ### 설명
 FastAPI를 사용해 CRUD를 만족하는 게시판을 만들기
 - Create: 게시글 작성
