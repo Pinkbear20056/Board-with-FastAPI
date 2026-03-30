@@ -3,3 +3,6 @@ __pycache__/
 
 # ignore all .pyc files
 *.pyc
+
+# ignore all files name ".DS_Store"
+.DS_Store
