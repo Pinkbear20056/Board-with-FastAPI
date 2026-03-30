@@ -24,6 +24,8 @@ Read: 게시글 조회 / 검색
 Upadate: 게시글 수정
 Delete: 게시글 삭제
 
+## 3/29 일
+
 ### 구조
 ```
 syj/
@@ -122,6 +124,13 @@ pycache가 이미 올라가 있을 때 삭제 방법
 git rm -r --cached __pycache__
 ```
 
+## 3/30 월
+
+### .gitignore 파일 수정하기 - 보안 개인 정보 안 올리게
+1. ```.DS_Store``` 삭제하기
+```.DS_Store```: 맥(macOS)이 자동으로 만드는 숨김 파일
+이유: 안에 폴더 구조 정보와 숨겨진 파일 이름이 존재
+
 ### 구조
 ```
 │   └── post/                  # 게시글 도메인
@@ -133,3 +142,5 @@ git rm -r --cached __pycache__
 │       └── router.py
 ```
 3 tier architecture
+
+
