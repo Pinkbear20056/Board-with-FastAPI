@@ -164,7 +164,7 @@ git rm -r --cached __pycache__
 라우터: 어떤 URL로 요청이 왔을 때 어떤 함수를 실행할지2
 
 ## 4/1 수 - model.py 만들기
-#### 1. 모델
+### 1. 모델
 - SQLAlchemy로 만듦
 - 데이터베이스 테이블의 정의
 - 실제 저장 구조 
@@ -228,10 +228,108 @@ name은 겹칠 수 있지만 id는 겹치면 안됨 이런거
       - 수정됨 → updated_at 자동 변경
 
 
-##### 2. 스키마
+### 2. 스키마
+#### FastAPI에서는 Pydantic을 사용
+#### 크게 2가지 역할
+1. 데이터 형식 정의: 데이터는 이렇게 생겨야 한다
+```python
+class UserCreate(BaseModel):
+    name: str
+    email: str
+```
+이라는 코드면 클라이언트는 반드시 아래의 형식으로 보내야함.
+```JSON
+{
+  "name": "kim",
+  "email": "test@test.com"
+}
+```
+2. 데이터 검증: 데이터가 올바른지 자동 검사
+```python
+class UserCreate(BaseModel):
+    name: str
+    age: int
+```
+이라는 코드에서 아래와 같은 요청을 보내면 에러가 발생
+```JSON
+{
+  "name": "kim",
+  "age": "스무살"
+}
+```
 
+#### 기본구조
+```python
+from pydantic import BaseModel
 
-#### 3 tier architecture란? 
+class 클래스이름(BaseModel):
+    필드이름: 타입
+
+# 예)
+class User(BaseModel):
+    name: str
+    age: int
+```
+
+#### 요청용 스키마 - 클라이언트가 보낼 때
+클라이언트가 보낼 때
+```python
+class UserCreate(BaseModel):
+    name: str
+    email: str
+    password: str
+```
+FastAPI에서 사용
+```python
+@app.post("/users")
+def create_user(user: UserCreate):
+    return user
+```
+
+#### 응답용 스키마 
+서버가 보낼 데이터
+```python
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+```
+FastAPI에서 사용
+```python
+@app.get("/users/{id}", response_model=UserResponse)
+def get_user():
+    return user
+```
+
+#### 전체 흐름
+```
+클라이언트 → Schema → FastAPI → DB(Model)
+                          ↓
+                     Schema → 응답
+```
+
+#### 일반 구조
+- UserCreate → 생성용
+- UserUpdate → 수정용
+- UserResponse → 응답용
+
+#### Base vs BaseModel
+1. Base
+- SQLAlchemy
+- DB 테이블을 만드는 설계도
+- 대상: 서버 내부
+
+2. BaseModel
+- Pydantic
+- API 데이터 형식 + 검증
+- 대상: 클라이언드 (서버에 요청을 보내는 쪽)
+      - 클라이언트가 서버에 어떤 형식으로 보내야 하는지
+      - 서버가 클라이언트에게 어떤 형식으로 돌려줘야 하는지
+
+### ORM 연동이 뭐냐? - 간단하게 필기만 해봄.
+DB 모델(SQLAlchemy 객체)을 Schema(BaseModel)로 변환하는 것
+
+### 3 tier architecture란? 
 1. 라우터 Router
 2. 서비스 Service
 3. 리포지토리 Repository
